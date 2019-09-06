@@ -4,6 +4,8 @@ import binascii, json, os
 import random
 import hashlib
 import rsa
+#安装Crypto包：pip3 install -i https://pypi.douban.com/simple pycryptodome
+
 
 
 class Encrypyed():
