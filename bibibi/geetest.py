@@ -7,11 +7,6 @@ import os
 from bibibi.img_locate import ImgProcess
 from bibibi.decrypt import Encrypyed
 import re
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
 
 
 # 轨迹处理来自FanhuaandLuomu/geetest_break
@@ -191,11 +186,17 @@ def fun_f(track_list):
 def crack(gt, challenge, referer):
     headers = {
         "Referer": referer,
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36",
-        "Content-Type":"application/json; charset=UTF-8",
-        "Cookie":"aliyungf_tc=AQAAAC5hGzTlNwIASFfU3uAVPAP1efmA; ssuid=5689407811; _ga=GA1.2.560332842.1567482068; csrfToken=75IdN5-VrGBNY2cyvM1_Nax2; TYCID=a9743a10cdfc11e98a202b8661be8d5a; undefined=a9743a10cdfc11e98a202b8661be8d5a; jsid=SEM-BAIDU-PZ1907-SY-000100; token=41c7ea2717c7471ab5e2c9b18159b7af; _utm=d0dd9b7de3ea468a8f1ee7b53b63c1a0; _gid=GA1.2.1197026298.1567650904; RTYCID=94950c135ae0443088a2ebb91f2bbc56; CT_TYCID=e6673be627ab4f0095688d1b1689e545; Hm_lvt_e92c8d65d92d534b0fc290df538b4758=1567482068,1567561423,1567651961; bannerFlag=true; refresh_page=0; cloud_token=e6c2770fd7904ba587223c8f20381eb6; Hm_lpvt_e92c8d65d92d534b0fc290df538b4758=1567667671; _gat_gtag_UA_123487620_1=1",
-        "Host":"www.tianyancha.com",
-        "Origin":"https://www.tianyancha.com"
+        # "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36",
+        # "Content-Type":"application/json; charset=UTF-8",
+        # "Cookie":"aliyungf_tc=AQAAAC5hGzTlNwIASFfU3uAVPAP1efmA; ssuid=5689407811; _ga=GA1.2.560332842.1567482068; csrfToken=75IdN5-VrGBNY2cyvM1_Nax2; TYCID=a9743a10cdfc11e98a202b8661be8d5a; undefined=a9743a10cdfc11e98a202b8661be8d5a; jsid=SEM-BAIDU-PZ1907-SY-000100; token=41c7ea2717c7471ab5e2c9b18159b7af; _utm=d0dd9b7de3ea468a8f1ee7b53b63c1a0; _gid=GA1.2.1197026298.1567650904; RTYCID=94950c135ae0443088a2ebb91f2bbc56; CT_TYCID=e6673be627ab4f0095688d1b1689e545; Hm_lvt_e92c8d65d92d534b0fc290df538b4758=1567482068,1567561423,1567651961; bannerFlag=true; refresh_page=0; cloud_token=e6c2770fd7904ba587223c8f20381eb6; Hm_lpvt_e92c8d65d92d534b0fc290df538b4758=1567667671; _gat_gtag_UA_123487620_1=1",
+        # "Host":"www.tianyancha.com",
+        # "Origin":"https://www.tianyancha.com",
+        "Origin": "http://gd.gsxt.gov.cn",
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "User-Agent":"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36",
+        "Host": "gd.gsxt.gov.cn",
+        "Cookie":"__jsluid_h=36a7e59b944cdfde5db742fe3c0cbb35; SECTOKEN=6942299049221164048; UM_distinctid=16d15014b610-0005fc5eaeab69-5f4e2917-1fa400-16d15014b6274c; __jsl_clearance=1568019196.315|0|8Pld7X%2BDXwQ7uzHCRIrv3N4H1e4%3D; CNZZDATA1261033118=522499031-1568011075-http%253A%252F%252Fgd.gsxt.gov.cn%252F%7C1568016475; JSESSIONID=0C2D5C8E4F98FBD127C334F8DDDC9DC3-n2:1; tlb_cookie=S172.16.12.46"
+
     }
 
     # 获取初始化数据
@@ -250,43 +251,42 @@ def crack(gt, challenge, referer):
         else:
             return json.loads(response.text[1:-1])
 
-browser = webdriver.Chrome()
-browser.maximize_window()#将浏览器最大化
-wait = WebDriverWait(browser, 10)
-
-def login():
-    try:
-        userInput = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '#web-content > div > div > div > div.position-rel.container.company_container > div > div.in-block.vertical-top.float-right.right_content.mt50.mr5.mb5 > div.module.module1.module2.loginmodule.collapse.in > div.modulein.modulein1.mobile_box.pl30.pr30.f14.collapse.in > div.pb30.position-rel > input')))
-        passwordInput = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR,'#web-content > div > div > div > div.position-rel.container.company_container > div > div.in-block.vertical-top.float-right.right_content.mt50.mr5.mb5 > div.module.module1.module2.loginmodule.collapse.in > div.modulein.modulein1.mobile_box.pl30.pr30.f14.collapse.in > div.pb40.position-rel > input')))
-        userInput.send_keys('15881172050')#账号
-        passwordInput.send_keys('Aa123456')#密码
-        changeLoginWay = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,'#web-content > div > div > div > div.position-rel.container.company_container > div > div.in-block.vertical-top.float-right.right_content.mt50.mr5.mb5 > div.module.module1.module2.loginmodule.collapse.in > div.modulein.modulein1.mobile_box.pl30.pr30.f14.collapse.in > div.c-white.b-c9.pt8.f18.text-center.login_btn')))
-        changeLoginWay.click()
-    except TimeoutException:
-        login()
-
-login()
 while True:
-    referer= "https://www.tianyancha.com/"
+    # referer= "https://www.tianyancha.com/"
+    referer = "http://gd.gsxt.gov.cn/socialuser-use-login.html"
     headers = {
         "Referer": referer,
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36",
-        "Content-Type":"application/json; charset=UTF-8",
-        "Cookie":"aliyungf_tc=AQAAAC5hGzTlNwIASFfU3uAVPAP1efmA; ssuid=5689407811; _ga=GA1.2.560332842.1567482068; csrfToken=75IdN5-VrGBNY2cyvM1_Nax2; TYCID=a9743a10cdfc11e98a202b8661be8d5a; undefined=a9743a10cdfc11e98a202b8661be8d5a; jsid=SEM-BAIDU-PZ1907-SY-000100; token=41c7ea2717c7471ab5e2c9b18159b7af; _utm=d0dd9b7de3ea468a8f1ee7b53b63c1a0; _gid=GA1.2.1197026298.1567650904; RTYCID=94950c135ae0443088a2ebb91f2bbc56; CT_TYCID=e6673be627ab4f0095688d1b1689e545; Hm_lvt_e92c8d65d92d534b0fc290df538b4758=1567482068,1567561423,1567651961; bannerFlag=true; refresh_page=0; cloud_token=e6c2770fd7904ba587223c8f20381eb6; Hm_lpvt_e92c8d65d92d534b0fc290df538b4758=1567667671; _gat_gtag_UA_123487620_1=1",
-        "Host":"www.tianyancha.com",
-        "Origin":"https://www.tianyancha.com"
+        # "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36",
+        # "Content-Type":"application/json; charset=UTF-8",
+        # "Cookie":"ssuid=5689407811; _ga=GA1.2.560332842.1567482068; TYCID=a9743a10cdfc11e98a202b8661be8d5a; undefined=a9743a10cdfc11e98a202b8661be8d5a; jsid=SEM-BAIDU-PZ1907-SY-000100; aliyungf_tc=AQAAACH2fhwRUwMASFfU3rEcUQ1SfcGo; csrfToken=dNmsSQJ3m-8GS_9yFQeToDkH; Hm_lvt_e92c8d65d92d534b0fc290df538b4758=1567561423,1567651961,1567676928,1567992218; _gid=GA1.2.1653486627.1567992220; bannerFlag=true; _gat_gtag_UA_123487620_1=1; Hm_lpvt_e92c8d65d92d534b0fc290df538b4758=1568007198",
+        # "Host":"www.tianyancha.com",
+        # "Origin":"https://www.tianyancha.com"
+        "Origin": "http://gd.gsxt.gov.cn",
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36",
+        "Host": "gd.gsxt.gov.cn",
+        "Cookie": "__jsluid_h=36a7e59b944cdfde5db742fe3c0cbb35; SECTOKEN=6942299049221164048; UM_distinctid=16d15014b610-0005fc5eaeab69-5f4e2917-1fa400-16d15014b6274c; __jsl_clearance=1568019196.315|0|8Pld7X%2BDXwQ7uzHCRIrv3N4H1e4%3D; CNZZDATA1261033118=522499031-1568011075-http%253A%252F%252Fgd.gsxt.gov.cn%252F%7C1568016475; JSESSIONID=0C2D5C8E4F98FBD127C334F8DDDC9DC3-n2:1; tlb_cookie=S172.16.12.46"
     }
-    geeData = requests.post(
+    geeData = requests.get(
         #"https://passport.bilibili.com/captcha/gc?cType=2&vcType=2&_=1539152432261"
-        "https://www.tianyancha.com/verify/geetest.xhtml?uuid=1567667683435", headers=headers
-    ).json()["data"]
+        #"https://www.tianyancha.com/verify/geetest.xhtml?uuid=1567667683435",
+        # url="http://gd.gsxt.gov.cn/socialuser-use-login-request.html"
+        url= "http://www.gsxt.gov.cn/SearchItemCaptcha?t=1568021866656", headers=headers
+    ).json()
+    # ["data"]
+    print(geeData)
     result = crack(geeData["gt"], geeData["challenge"], referer)
     print("result_Json:"+str(result))
-    if result["validate"] != None:
-        print("validate:"+result["validate"])
-        break
-    login_json = {
+    # if result["validate"] != None:
+    #     print("validate:"+result["validate"])
+        # login_response = requests.post(url="https://www.tianyancha.com/cd/login.json", headers=headers, json={"mobile":"13817432475",
+        # "cdpassword":"b52d75691b33267a7c91ea8201efa526",
+        # "loginway":"PL",
+        # "autoLogin":"false",
+        # "challenge":geeData["challenge"],
+        # "validate":result["validate"],
+        # "seccode":result["validate"]+"|jordan"})
+        # print("login_response:"+login_response.text)
+        # break
 
-    }
-    login_response = requests.post("https://www.tianyancha.com/cd/login.json")
 
