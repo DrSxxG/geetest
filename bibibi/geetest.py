@@ -7,7 +7,8 @@ import os
 from bibibi.img_locate import ImgProcess
 from bibibi.decrypt import Encrypyed
 import re
-
+from datetime import datetime
+import execjs
 
 # 轨迹处理来自FanhuaandLuomu/geetest_break
 def cal_userresponse(a, b):
@@ -250,6 +251,25 @@ def crack(gt, challenge, referer):
             return json.loads(text[:-1])
         else:
             return json.loads(response.text[1:-1])
+def get_521_content():
+    headers = {
+        "Referer":"http://gd.gsxt.gov.cn/socialuser-use-login.html",
+        "Origin": "http://gd.gsxt.gov.cn",
+        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36",
+        "Host": "gd.gsxt.gov.cn",
+        "Cookie": "UM_distinctid=16d15014b610-0005fc5eaeab69-5f4e2917-1fa400-16d15014b6274c; __jsluid_h=37605403e9a995477af73380fd4831a6; SECTOKEN=6942343482264258490; CNZZDATA1261033118=1506448626-1568016475-http%253A%252F%252Fwww.gsxt.gov.cn%252F%7C1568021875; __jsl_clearance=1568077492.06|0|8tMtXlsADL%2BHh14gGsh7PMR5nKE%3D; JSESSIONID=27D9CA50C2C4CC1A7512DFB61A466B8C-n2:3; tlb_cookie=S172.16.12.72"
+    }
+    time_in_unix = str(int(time.mktime(datetime.now().timetuple())))
+    geeData = requests.get(
+        url="http://www.gsxt.gov.cn/SearchItemCaptcha?t=" + time_in_unix + str(random.randint(100, 999)),
+        headers=headers
+    )
+    cookies = geeData.cookies
+    cookies = '; '.join(['='.join(item) for item in cookies.items()])
+    text_521 = geeData.text
+    txt_521 = ''.join(re.findall('<script>(.*?)</script>', text_521))
+    return (txt_521, cookies)
 
 while True:
     # referer= "https://www.tianyancha.com/"
@@ -265,16 +285,26 @@ while True:
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.87 Safari/537.36",
         "Host": "gd.gsxt.gov.cn",
-        "Cookie": "__jsluid_h=36a7e59b944cdfde5db742fe3c0cbb35; SECTOKEN=6942299049221164048; UM_distinctid=16d15014b610-0005fc5eaeab69-5f4e2917-1fa400-16d15014b6274c; __jsl_clearance=1568019196.315|0|8Pld7X%2BDXwQ7uzHCRIrv3N4H1e4%3D; CNZZDATA1261033118=522499031-1568011075-http%253A%252F%252Fgd.gsxt.gov.cn%252F%7C1568016475; JSESSIONID=0C2D5C8E4F98FBD127C334F8DDDC9DC3-n2:1; tlb_cookie=S172.16.12.46"
+        "Cookie": "UM_distinctid=16d15014b610-0005fc5eaeab69-5f4e2917-1fa400-16d15014b6274c; __jsluid_h=37605403e9a995477af73380fd4831a6; SECTOKEN=6942343482264258490; CNZZDATA1261033118=1506448626-1568016475-http%253A%252F%252Fwww.gsxt.gov.cn%252F%7C1568021875; __jsl_clearance=1568077492.06|0|8tMtXlsADL%2BHh14gGsh7PMR5nKE%3D; JSESSIONID=27D9CA50C2C4CC1A7512DFB61A466B8C-n2:3; tlb_cookie=S172.16.12.72"
     }
+    time_in_unix = str(int(time.mktime(datetime.now().timetuple())))
+    # print(time_in_unix)
     geeData = requests.get(
         #"https://passport.bilibili.com/captcha/gc?cType=2&vcType=2&_=1539152432261"
         #"https://www.tianyancha.com/verify/geetest.xhtml?uuid=1567667683435",
         # url="http://gd.gsxt.gov.cn/socialuser-use-login-request.html"
-        url= "http://www.gsxt.gov.cn/SearchItemCaptcha?t=1568021866656", headers=headers
-    ).json()
+        url= "http://www.gsxt.gov.cn/SearchItemCaptcha?t="+time_in_unix+str(random.randint(100, 999)), headers=headers
+    ).text
+    print("http://www.gsxt.gov.cn/SearchItemCaptcha?t="+time_in_unix+str(random.randint(100, 999)))
     # ["data"]
     print(geeData)
+    New_JS_Function = "function getClearance(){" +geeData+"};"
+    New_JS_Function = New_JS_Function.replace("</script>", "")
+    New_JS_Function = New_JS_Function.replace("eval", "return")
+    New_JS_Function = New_JS_Function.replace("<script>", "")
+    JS_compile = execjs.compile(New_JS_Function)
+    JS_result = JS_compile.call("getClearance")
+    print(JS_result)
     result = crack(geeData["gt"], geeData["challenge"], referer)
     print("result_Json:"+str(result))
     # if result["validate"] != None:
